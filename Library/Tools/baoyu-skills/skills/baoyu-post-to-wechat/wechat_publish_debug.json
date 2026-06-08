@@ -1,0 +1,70 @@
+{
+  "timestamp": "2026-06-08T07:13:39.488Z",
+  "cwd": "/Users/shanfu/cc/Library/Tools/baoyu-skills/skills/baoyu-post-to-wechat",
+  "url": "https://api.weixin.qq.com/cgi-bin/draft/add?access_token=104_EONAJUeSAQqaFYjvXubu2Rq-azH2hwU0CJzC6jO-JohRHpzhWC0Bwk99Gxw7uogY7XxV0zK5HWDDpQdjbdIXVO4c0_DRvn8uhp4zOFwLOIRlCmin4gzgtBVEafIRDScABACOD",
+  "payload": {
+    "article_type": "news",
+    "title": "《数据认责体系建设白皮书》连载五：从“三不清”到“四统一”！ 揭秘金融标杆国企的数据认责实战密码",
+    "content": "<section class=\"container\" style=\"font-family: -apple-system-font,BlinkMacSystemFont, Helvetica Neue, PingFang SC, Hiragino Sans GB , Microsoft YaHei UI , Microsoft YaHei ,Arial,sans-serif; font-size: 16px; line-height: 1.75; text-align: left;\"><p class=\"p\" style=\"margin: 1.5em 8px; letter-spacing: 0.1em; color: #3f3f3f; margin-top: 0 !important;\">在上一期连载中，我们详细拆解了构建权责对等落地机制的四步法：从确立策略与划定范围，到编制认责矩阵，再到具体的落地实施与常态化运营。这套方法论为企业理清数据责任提供了清晰的路径。</p><p class=\"p\" style=\"margin: 1.5em 8px; letter-spacing: 0.1...",
+    "thumb_media_id": "FcT2MHMBEEJmWesW-urAKWo6M_UaJyli3_cUwHeIUlWikGxHVA3uPcwL1gP3vkJf",
+    "need_open_comment": 1,
+    "only_fans_can_comment": 0,
+    "digest": "在上一期连载中，我们详细拆解了构建权责对等落地机制的四步法：从确立策略与划定范围，到编制认责矩阵，再到具体的落地实施与常态化运营。这套方法论为企业理清数据责任提供了清晰的路径。"
+  },
+  "response": {
+    "media_id": "FcT2MHMBEEJmWesW-urAKahCQi_Q1v0CNUtT6JVes5kjkhoUDTgdACJIbobJ6wYi",
+    "item": [
+      {
+        "index": 0,
+        "ad_count": 2
+      }
+    ]
+  }
+}
+---
+{
+  "timestamp": "2026-06-08T07:14:02.529Z",
+  "cwd": "/Users/shanfu/cc/Library/Tools/baoyu-skills/skills/baoyu-post-to-wechat",
+  "url": "https://api.weixin.qq.com/cgi-bin/draft/add?access_token=104_fO9EviQi2CbwIyu-J2j9yj3HdKUOUWQbn6Pb-2VSPW6aj5uXm2kRErVIosoaWcmd8GlGIdokusfK9-ooAiyNtk2DDLTQ6SxEAUoH3GWMVsdmR37QfaLaRE0UuT8WMDhAJAJZQ",
+  "payload": {
+    "article_type": "news",
+    "title": "连载6 - 《数据认责体系建设白皮书》连载六：OpenClaw大热背后的冷思考！ AI时代数据认责的范式转移与生态共建",
+    "content": "<section class=\"container\" style=\"font-family: -apple-system-font,BlinkMacSystemFont, Helvetica Neue, PingFang SC, Hiragino Sans GB , Microsoft YaHei UI , Microsoft YaHei ,Arial,sans-serif; font-size: 16px; line-height: 1.75; text-align: left;\">\n    \n  \n    \n  \n    \n  </section>...",
+    "thumb_media_id": "FcT2MHMBEEJmWesW-urAKYwZnflsHN-V8gsVWVCaJtR6ybwGhgSuY3z5dBL1XY-_",
+    "need_open_comment": 1,
+    "only_fans_can_comment": 0
+  },
+  "response": {
+    "media_id": "FcT2MHMBEEJmWesW-urAKd3fjvIfcQS4IPKNllIGeT1LzYXILOZX64NspZtTEbdX",
+    "item": [
+      {
+        "index": 0,
+        "ad_count": 0
+      }
+    ]
+  }
+}
+---
+{
+  "timestamp": "2026-06-08T07:14:47.254Z",
+  "cwd": "/Users/shanfu/cc/Library/Tools/baoyu-skills/skills/baoyu-post-to-wechat",
+  "url": "https://api.weixin.qq.com/cgi-bin/draft/add?access_token=104_3PUHyFbOU4j9X2iTT-Z0iv7-4HChkUkQID9sGAC6p7MianexYV_EZducwB-fivnh9DWfvcSgQggjOzaCHFbsOTduvleZmq6ptoj-Xcj7QHH_7eS1_fn2MiQUO-kWEFgAIAQYZ",
+  "payload": {
+    "article_type": "news",
+    "title": "连载6 - 《数据认责体系建设白皮书》连载六：OpenClaw大热背后的冷思考！ AI时代数据认责的范式转移与生态共建",
+    "content": "<section class=\"container\" style=\"font-family: -apple-system-font,BlinkMacSystemFont, Helvetica Neue, PingFang SC, Hiragino Sans GB , Microsoft YaHei UI , Microsoft YaHei ,Arial,sans-serif; font-size: 16px; line-height: 1.75; text-align: left;\">\n    \n  \n    \n  \n    \n  </section>...",
+    "thumb_media_id": "FcT2MHMBEEJmWesW-urAKSvMUJbLjhIQZOkZnME239l2OXbvLAh8xzisUvF3tnSf",
+    "need_open_comment": 1,
+    "only_fans_can_comment": 0
+  },
+  "response": {
+    "media_id": "FcT2MHMBEEJmWesW-urAKemj9awVUiHOyfc8ndIvDKTbJ9m0O_WUXrgG7cM-pQ6h",
+    "item": [
+      {
+        "index": 0,
+        "ad_count": 0
+      }
+    ]
+  }
+}
+---

@@ -1,0 +1,15 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+
+# App State & Data
+.app_state.json
+.app_state.json.bak_*
+server_debug.log
+Release_Package/
+ReportSerialize_Pro_Portable.zip

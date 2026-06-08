@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-serif: "Cormorant Garamond", serif;
+}
+
+@layer base {
+  .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+    font-family: var(--font-serif), "Noto Serif SC", "STSong", "SimSun", serif;
+    font-weight: bold;
+  }
+  .prose table {
+    @apply border-collapse border border-[#141414]/10 rounded-lg overflow-hidden w-full my-6;
+    table-layout: fixed;
+  }
+  .prose thead {
+    @apply bg-[#F5F5F0]/80 border-b border-[#141414]/10;
+  }
+  .prose th, .prose td {
+    @apply border border-[#141414]/10 px-4 py-3 text-sm text-left relative;
+  }
+  .prose th {
+    @apply font-bold text-[#141414] uppercase tracking-wider text-[11px] bg-[#F5F5F0]/50;
+  }
+  .prose tr:nth-child(even) {
+    @apply bg-[#F5F5F0]/20;
+  }
+}
+
+/* Tiptap specific styles */
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #adb5bd;
+  pointer-events: none;
+  height: 0;
+}
+
+.ProseMirror {
+  outline: none !important;
+}
+
+.ProseMirror p, .prose p {
+  margin-top: 1.5em !important;
+  margin-bottom: 1.5em !important;
+}
+
+/* Tiptap Table Resizing */
+.ProseMirror .column-resize-handle {
+  background-color: #5A5A40;
+  bottom: 0;
+  position: absolute;
+  right: -2px;
+  pointer-events: none;
+  top: 0;
+  width: 4px;
+  z-index: 20;
+}
+
+.ProseMirror.resize-cursor {
+  cursor: ew-resize;
+  cursor: col-resize;
+}
+
+/* Image Selection & Interaction */
+.ProseMirror img {
+  @apply rounded-xl transition-all duration-200;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+  border: 2px solid transparent;
+}
+
+.ProseMirror img:hover {
+  border-color: rgba(90, 90, 64, 0.2);
+  cursor: pointer;
+}
+
+.ProseMirror img.ProseMirror-selectednode {
+  outline: 3px solid #5A5A40;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 6px rgba(90, 90, 64, 0.15), 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  filter: brightness(1.02);
+  cursor: move;
+}
+
+/* UI Scaling Overrides */
+html {
+  font-size: 18px !important;
+}
+
+.text-\[7px\] {
+  font-size: 0.5rem !important; /* ~9px */
+}
+.text-\[8px\] {
+  font-size: 0.5625rem !important; /* ~10px */
+}
+.text-\[9px\] {
+  font-size: 0.625rem !important; /* ~11.25px */
+}
+.text-\[10px\] {
+  font-size: 0.6875rem !important; /* ~12.38px */
+}
+.text-\[11px\] {
+  font-size: 0.75rem !important; /* ~13.5px */
+}
+
