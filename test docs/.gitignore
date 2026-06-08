@@ -1,0 +1,7 @@
+*.bak
+*.bak_*
+node_modules/
+.DS_Store
+Thumbs.db
+fix_*.py
+restore_plans.py
