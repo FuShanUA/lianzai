@@ -64,18 +64,19 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 const normalizeSaKeyPath = (p: string) => {
   if (!p) return '';
+  const homeDir = (window as any).__HOME_DIR__ || '/Users/shanfu';
   let norm = p.replace(/\\/g, '/');
   if (norm.includes('application_default_credentials.json') && (p.includes('\\') || /^[a-zA-Z]:/i.test(p))) {
-    return '/Users/shanfu/.config/gcloud/application_default_credentials.json';
+    return `${homeDir}/.config/gcloud/application_default_credentials.json`;
   }
   if (norm.includes('/cc/')) {
     const idx = norm.indexOf('/cc/');
-    return '/Users/shanfu' + norm.substring(idx);
+    return homeDir + norm.substring(idx);
   }
   if (/^[a-zA-Z]:\/cc\//i.test(norm)) {
-    norm = norm.replace(/^[a-zA-Z]:\/cc\//i, '/Users/shanfu/cc/');
+    norm = norm.replace(/^[a-zA-Z]:\/cc\//i, `${homeDir}/cc/`);
   } else if (norm.startsWith('cc/')) {
-    norm = '/Users/shanfu/cc/' + norm.substring(3);
+    norm = `${homeDir}/cc/` + norm.substring(3);
   }
   return norm;
 };
@@ -329,70 +330,87 @@ export default function App() {
 
   // Load state and model list on mount
   useEffect(() => {
-    fetch('/api/load-state')
-      .then(res => {
-        if (!res.ok) throw new Error('No state found');
-        return res.json();
-      })
-      .then(data => {
-        if (data && typeof data === 'object') {
-          const epMode = data.episodeMode !== undefined ? data.episodeMode : 'fixed';
-          const epCount = data.episodeCount !== undefined ? Number(data.episodeCount) : 6;
-
-          if (data.issues) {
-            let loadedIssues = data.issues;
-            if (epMode === 'fixed' && epCount && loadedIssues.length > epCount) {
-              loadedIssues = loadedIssues.slice(0, epCount);
+    fetch('/api/system-info')
+      .then(res => res.json())
+      .then(info => {
+        if (info.homedir) {
+          (window as any).__HOME_DIR__ = info.homedir;
+          (window as any).__PLATFORM__ = info.platform;
+          aiState.setVertexSaKeyPath(prev => {
+            if (prev === '/Users/shanfu/.config/gcloud/application_default_credentials.json') {
+              return `${info.homedir}/.config/gcloud/application_default_credentials.json`;
             }
-            setIssues(loadedIssues.map((ch: any) => ({
-              ...ch,
-              versions: Array.isArray(ch.versions) ? ch.versions : [],
-              visuals: Array.isArray(ch.visuals) ? ch.visuals : []
-            })));
-          }
-          if (data.activeId !== undefined) setActiveId(data.activeId);
-          if (data.serialPlan !== undefined) projectState.setSerialPlan(data.serialPlan);
-          if (data.planApproved !== undefined) projectState.setPlanApproved(data.planApproved);
-          if (data.isPlanGenerated !== undefined) projectState.setIsPlanGenerated(data.isPlanGenerated);
-          if (data.planVersions !== undefined) projectState.setPlanVersions(data.planVersions);
-          if (data.reportText !== undefined) projectState.setReportText(data.reportText);
-          if (data.reportSummary !== undefined) projectState.setReportSummary(data.reportSummary);
-          if (data.fileName !== undefined) projectState.setFileName(data.fileName);
-          if (data.projectPath !== undefined) projectState.setProjectPath(data.projectPath);
-          if (data.companyBusiness !== undefined) projectState.setCompanyBusiness(data.companyBusiness);
-          if (data.reportPurpose !== undefined) projectState.setReportPurpose(data.reportPurpose);
-          if (data.currentHotspot !== undefined) projectState.setCurrentHotspot(data.currentHotspot);
-          if (data.selectedTone !== undefined) projectState.setSelectedTone(data.selectedTone);
-          if (data.episodeMode !== undefined) projectState.setEpisodeMode(data.episodeMode);
-          if (data.episodeCount !== undefined) projectState.setEpisodeCount(data.episodeCount);
-          if (data.ctaMode !== undefined) projectState.setCtaMode(data.ctaMode);
-          if (data.exactCtaTemplate !== undefined) projectState.setExactCtaTemplate(data.exactCtaTemplate);
-          if (data.generateCtaTemplate !== undefined) projectState.setGenerateCtaTemplate(data.generateCtaTemplate);
-          if (data.wechatAppId !== undefined) projectState.setWechatAppId(data.wechatAppId);
-          const secret = data.wechatSecret !== undefined ? data.wechatSecret : data.wechatAppSecret;
-          if (secret !== undefined) projectState.setWechatSecret(secret);
-          if (data.wechatAuthor !== undefined) projectState.setWechatAuthor(data.wechatAuthor);
-          if (data.wechatTheme !== undefined) projectState.setWechatTheme(data.wechatTheme);
-          if (data.wechatSyncEnabled !== undefined) projectState.setWechatSyncEnabled(data.wechatSyncEnabled);
-          if (data.wechatAccountAlias !== undefined) projectState.setWechatAccountAlias(data.wechatAccountAlias);
-          if (data.wechatDefaultCover !== undefined) projectState.setWechatDefaultCover(data.wechatDefaultCover);
-
-          // Load AI Engine config fields
-          if (data.selectedLlmVendor !== undefined) aiState.setSelectedLlmVendor(normalizeVendor(data.selectedLlmVendor));
-          if (data.selectedLlmModel !== undefined) aiState.setSelectedLlmModel(data.selectedLlmModel);
-          if (data.selectedImageModel !== undefined) aiState.setSelectedImageModel(data.selectedImageModel);
-          if (data.selectedImageVendor !== undefined) aiState.setSelectedImageVendor(normalizeVendor(data.selectedImageVendor));
-          if (data.llmApiKey !== undefined) aiState.setLlmApiKey(data.llmApiKey);
-          if (data.imageApiKey !== undefined) aiState.setImageApiKey(data.imageApiKey);
-          if (data.vertexProjectId !== undefined) aiState.setVertexProjectId(data.vertexProjectId);
-          if (data.vertexLocation !== undefined) aiState.setVertexLocation(data.vertexLocation);
-          if (data.vertexSaKeyPath !== undefined) aiState.setVertexSaKeyPath(normalizeSaKeyPath(data.vertexSaKeyPath));
+            return prev;
+          });
         }
-        projectState.setIsStateLoaded(true);
       })
-      .catch(err => {
-        console.log('No prior state found:', err);
-        projectState.setIsStateLoaded(true);
+      .catch(err => console.error("Failed to load system info:", err))
+      .finally(() => {
+        fetch('/api/load-state')
+          .then(res => {
+            if (!res.ok) throw new Error('No state found');
+            return res.json();
+          })
+          .then(data => {
+            if (data && typeof data === 'object') {
+              const epMode = data.episodeMode !== undefined ? data.episodeMode : 'fixed';
+              const epCount = data.episodeCount !== undefined ? Number(data.episodeCount) : 6;
+
+              if (data.issues) {
+                let loadedIssues = data.issues;
+                if (epMode === 'fixed' && epCount && loadedIssues.length > epCount) {
+                  loadedIssues = loadedIssues.slice(0, epCount);
+                }
+                setIssues(loadedIssues.map((ch: any) => ({
+                  ...ch,
+                  versions: Array.isArray(ch.versions) ? ch.versions : [],
+                  visuals: Array.isArray(ch.visuals) ? ch.visuals : []
+                })));
+              }
+              if (data.activeId !== undefined) setActiveId(data.activeId);
+              if (data.serialPlan !== undefined) projectState.setSerialPlan(data.serialPlan);
+              if (data.planApproved !== undefined) projectState.setPlanApproved(data.planApproved);
+              if (data.isPlanGenerated !== undefined) projectState.setIsPlanGenerated(data.isPlanGenerated);
+              if (data.planVersions !== undefined) projectState.setPlanVersions(data.planVersions);
+              if (data.reportText !== undefined) projectState.setReportText(data.reportText);
+              if (data.reportSummary !== undefined) projectState.setReportSummary(data.reportSummary);
+              if (data.fileName !== undefined) projectState.setFileName(data.fileName);
+              if (data.projectPath !== undefined) projectState.setProjectPath(data.projectPath);
+              if (data.companyBusiness !== undefined) projectState.setCompanyBusiness(data.companyBusiness);
+              if (data.reportPurpose !== undefined) projectState.setReportPurpose(data.reportPurpose);
+              if (data.currentHotspot !== undefined) projectState.setCurrentHotspot(data.currentHotspot);
+              if (data.selectedTone !== undefined) projectState.setSelectedTone(data.selectedTone);
+              if (data.episodeMode !== undefined) projectState.setEpisodeMode(data.episodeMode);
+              if (data.episodeCount !== undefined) projectState.setEpisodeCount(data.episodeCount);
+              if (data.ctaMode !== undefined) projectState.setCtaMode(data.ctaMode);
+              if (data.exactCtaTemplate !== undefined) projectState.setExactCtaTemplate(data.exactCtaTemplate);
+              if (data.generateCtaTemplate !== undefined) projectState.setGenerateCtaTemplate(data.generateCtaTemplate);
+              if (data.wechatAppId !== undefined) projectState.setWechatAppId(data.wechatAppId);
+              const secret = data.wechatSecret !== undefined ? data.wechatSecret : data.wechatAppSecret;
+              if (secret !== undefined) projectState.setWechatSecret(secret);
+              if (data.wechatAuthor !== undefined) projectState.setWechatAuthor(data.wechatAuthor);
+              if (data.wechatTheme !== undefined) projectState.setWechatTheme(data.wechatTheme);
+              if (data.wechatSyncEnabled !== undefined) projectState.setWechatSyncEnabled(data.wechatSyncEnabled);
+              if (data.wechatAccountAlias !== undefined) projectState.setWechatAccountAlias(data.wechatAccountAlias);
+              if (data.wechatDefaultCover !== undefined) projectState.setWechatDefaultCover(data.wechatDefaultCover);
+
+              // Load AI Engine config fields
+              if (data.selectedLlmVendor !== undefined) aiState.setSelectedLlmVendor(normalizeVendor(data.selectedLlmVendor));
+              if (data.selectedLlmModel !== undefined) aiState.setSelectedLlmModel(data.selectedLlmModel);
+              if (data.selectedImageModel !== undefined) aiState.setSelectedImageModel(data.selectedImageModel);
+              if (data.selectedImageVendor !== undefined) aiState.setSelectedImageVendor(normalizeVendor(data.selectedImageVendor));
+              if (data.llmApiKey !== undefined) aiState.setLlmApiKey(data.llmApiKey);
+              if (data.imageApiKey !== undefined) aiState.setImageApiKey(data.imageApiKey);
+              if (data.vertexProjectId !== undefined) aiState.setVertexProjectId(data.vertexProjectId);
+              if (data.vertexLocation !== undefined) aiState.setVertexLocation(data.vertexLocation);
+              if (data.vertexSaKeyPath !== undefined) aiState.setVertexSaKeyPath(normalizeSaKeyPath(data.vertexSaKeyPath));
+            }
+            projectState.setIsStateLoaded(true);
+          })
+          .catch(err => {
+            console.log('No prior state found:', err);
+            projectState.setIsStateLoaded(true);
+          });
       });
 
     // Fetch dynamic model list from backend

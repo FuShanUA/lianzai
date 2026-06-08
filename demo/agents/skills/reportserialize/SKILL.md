@@ -4,7 +4,7 @@
 This skill transforms long-form professional PDFs into a multi-part, serialized Markdown article series (especially tailored for WeChat Official Accounts). It extracts the core insights and generates a structured content plan, then drafts each chapter sequentially with cohesive context and targeted business CTAs.
 
 ## Core Capabilities
-1. **GUI Mode (Vite React App)**: An interactive editor and visual dashboard for parsing PDFs, reviewing AI-generated plans, editing chapters locally with multi-versioning, and generating interactive chat refinements (located in `/Users/shanfu/cc/Library/Tools/reportserialize`).
+1. **GUI Mode (Vite React App)**: An interactive editor and visual dashboard for parsing PDFs, reviewing AI-generated plans, editing chapters locally with multi-versioning, and generating interactive chat refinements (located in the project root folder).
 2. **CLI Mode (Python Script)**: A fast, headless terminal interface for batch-converting a PDF directly into an output folder of `.md` chapters.
 
 ## Commands
@@ -12,14 +12,14 @@ This skill transforms long-form professional PDFs into a multi-part, serialized 
 ### 1. Launch GUI Mode
 Run the Web UI for visual operations (Start the React Dev Server):
 ```powershell
-/Users/shanfu/cc/.agents/skills/reportserialize/gui_mode.bat
+npm run dev
 ```
 *(The GUI will automatically start a local server at `http://localhost:3000` and open your browser.)*
 
 ### 2. Run CLI Mode
 Use the python CLI script to generate the serialized chapters headless:
 ```powershell
-python /Users/shanfu/cc/.agents/skills/reportserialize/cli_mode.py --pdf "path/to/report.pdf" --business "公司主营业务" --tone "professional" --output-dir "/Users/shanfu/cc/Projects/Translation_Project/output"
+python demo/agents/skills/reportserialize/cli_mode.py --pdf "path/to/report.pdf" --business "公司主营业务" --tone "professional" --output-dir "./output"
 ```
 **CLI Parameters:**
 - `--pdf`: (Required) Path to the source PDF report.

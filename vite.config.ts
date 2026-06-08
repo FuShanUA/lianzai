@@ -455,7 +455,7 @@ const localFileAPIPlugin = () => ({
     const loadAllApiKeys = () => {
       const keys: Record<string, any> = { ...process.env };
       const envSettings = loadEnv('development', '.', '');
-      const globalEnvPath = process.platform === 'win32' ? 'D:\\cc\\.baoyu-skills\\.env' : '/Users/shanfu/cc/.baoyu-skills/.env';
+      const globalEnvPath = process.platform === 'win32' ? 'D:\\cc\\.baoyu-skills\\.env' : path.join(os.homedir(), 'cc/.baoyu-skills/.env');
       
       // Load from local .env
       Object.assign(keys, envSettings);
@@ -592,6 +592,14 @@ const localFileAPIPlugin = () => ({
       res.status(200).json(LLM_MODELS);
     });
 
+    app.get('/api/system-info', (req, res) => {
+      res.status(200).json({
+        homedir: os.homedir(),
+        platform: process.platform,
+        username: os.userInfo?.()?.username || ''
+      });
+    });
+
     app.post('/api/generate-content', async (req, res) => {
       try {
         const { model, prompt, llmApiKey, provider, vertexProjectId, vertexLocation } = req.body;
@@ -604,8 +612,17 @@ const localFileAPIPlugin = () => ({
 
     app.get('/api/get-styles', (req, res) => {
       try {
-        const humanizerPath = 'D:\\cc\\Library\\Agents\\Humanizer\\SKILL.md';
-        const writingStylePath = 'D:\\cc\\Library\\Tools\\WritingStyle\\SKILL.md';
+        const localHumanizerPath = path.join(__dirname, 'Library', 'Tools', 'humanizer-zh', 'SKILL.md');
+        const legacyHumanizerPath = process.platform === 'win32'
+          ? 'D:\\cc\\Library\\Agents\\Humanizer\\SKILL.md'
+          : path.join(os.homedir(), 'cc/Library/Agents/Humanizer/SKILL.md');
+        const humanizerPath = fs.existsSync(localHumanizerPath) ? localHumanizerPath : legacyHumanizerPath;
+
+        const localWritingStylePath = path.join(__dirname, 'Library', 'Tools', 'WritingStyle', 'SKILL.md');
+        const legacyWritingStylePath = process.platform === 'win32'
+          ? 'D:\\cc\\Library\\Tools\\WritingStyle\\SKILL.md'
+          : path.join(os.homedir(), 'cc/Library/Tools/WritingStyle/SKILL.md');
+        const writingStylePath = fs.existsSync(localWritingStylePath) ? localWritingStylePath : legacyWritingStylePath;
         
         const humanizer = fs.existsSync(humanizerPath) ? fs.readFileSync(humanizerPath, 'utf8') : '';
         const writingStyle = fs.existsSync(writingStylePath) ? fs.readFileSync(writingStylePath, 'utf8') : '';
@@ -896,8 +913,8 @@ const localFileAPIPlugin = () => ({
       try {
         const possiblePaths = [
           path.join(os.homedir(), '.baoyu-skills', 'baoyu-post-to-wechat', 'EXTEND.md'),
-          '/Users/shanfu/cc/.baoyu-skills/baoyu-post-to-wechat/EXTEND.md',
-          'D:\\cc\\.baoyu-skills\\baoyu-post-to-wechat\\EXTEND.md'
+          path.join(os.homedir(), 'cc/.baoyu-skills/baoyu-post-to-wechat/EXTEND.md'),
+          path.join('D:', 'cc', '.baoyu-skills', 'baoyu-post-to-wechat', 'EXTEND.md')
         ];
         
         let accounts = [];
@@ -1018,7 +1035,7 @@ const localFileAPIPlugin = () => ({
 
         console.log('[Publish] Final command:', command);
 
-        const cwd = process.platform === 'win32' ? 'D:\\cc' : '/Users/shanfu/cc';
+        const cwd = __dirname;
         exec(command, { encoding: 'utf8', cwd, env }, (err, stdout, stderr) => {
           if (err) {
             const errMsg = stderr || stdout || err.message;
@@ -1052,7 +1069,7 @@ const localFileAPIPlugin = () => ({
 
     app.get('/api/wechat-credentials', (req, res) => {
       try {
-        const envPath = process.platform === 'win32' ? 'D:\\cc\\.baoyu-skills\\.env' : '/Users/shanfu/cc/.baoyu-skills/.env';
+        const envPath = process.platform === 'win32' ? 'D:\\cc\\.baoyu-skills\\.env' : path.join(os.homedir(), 'cc/.baoyu-skills/.env');
         let credentials = { appId: '', appSecret: '' };
         if (fs.existsSync(envPath)) {
           const content = fs.readFileSync(envPath, 'utf8');
@@ -1073,7 +1090,7 @@ const localFileAPIPlugin = () => ({
     app.post('/api/wechat-credentials', (req, res) => {
       try {
         const { appId, appSecret } = req.body;
-        const envDir = process.platform === 'win32' ? 'D:\\cc\\.baoyu-skills' : '/Users/shanfu/cc/.baoyu-skills';
+        const envDir = process.platform === 'win32' ? 'D:\\cc\\.baoyu-skills' : path.join(os.homedir(), 'cc/.baoyu-skills');
         const envPath = path.join(envDir, '.env');
         if (!fs.existsSync(envDir)) fs.mkdirSync(envDir, { recursive: true });
         let content = fs.existsSync(envPath) ? fs.readFileSync(envPath, 'utf8') : '';
@@ -1159,7 +1176,11 @@ const localFileAPIPlugin = () => ({
         
         // Stable naming: User now wants timestamped names directly in the slug folder.
         const outputPath = path.join(outputDir, activeFilename);
-        const imagineScript = '/Users/shanfu/cc/Library/Tools/baoyu-skills/skills/baoyu-imagine/scripts/main.ts';
+        const localImagineScript = path.join(__dirname, 'Library', 'Tools', 'baoyu-skills', 'skills', 'baoyu-imagine', 'scripts', 'main.ts');
+        const legacyImagineScript = process.platform === 'win32'
+          ? 'D:\\cc\\Library\\Tools\\baoyu-skills\\skills\\baoyu-imagine\\scripts\\main.ts'
+          : path.join(os.homedir(), 'cc/Library/Tools/baoyu-skills/skills/baoyu-imagine/scripts/main.ts');
+        const imagineScript = fs.existsSync(localImagineScript) ? localImagineScript : legacyImagineScript;
         
         const promptFilename = activeFilename.split('.')[0] + '.md';
         const promptPath = path.join(promptDir, promptFilename);

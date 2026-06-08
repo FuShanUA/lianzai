@@ -1,4 +1,6 @@
 Set WshShell = CreateObject("WScript.Shell")
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 strPath = objFSO.GetParentFolderName(WScript.ScriptFullName)
-WshShell.Run "powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File """ & strPath & "\launch_reportserialize_pro.ps1""", 0, False
+WshShell.Run "node """ & strPath & "\server.mjs""", 0, False
+WScript.Sleep 2000
+WshShell.Run "cmd.exe /c start http://localhost:3005", 0, False

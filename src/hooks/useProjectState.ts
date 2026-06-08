@@ -11,18 +11,19 @@ import { safeJsonParse, normalizePaths, cleanTitle } from '../utils';
 
 const normalizeSaKeyPath = (p: string) => {
   if (!p) return '';
+  const homeDir = (window as any).__HOME_DIR__ || '/Users/shanfu';
   let norm = p.replace(/\\/g, '/');
   if (norm.includes('application_default_credentials.json') && (p.includes('\\') || /^[a-zA-Z]:/i.test(p))) {
-    return '/Users/shanfu/.config/gcloud/application_default_credentials.json';
+    return `${homeDir}/.config/gcloud/application_default_credentials.json`;
   }
   if (norm.includes('/cc/')) {
     const idx = norm.indexOf('/cc/');
-    return '/Users/shanfu' + norm.substring(idx);
+    return homeDir + norm.substring(idx);
   }
   if (/^[a-zA-Z]:\/cc\//i.test(norm)) {
-    norm = norm.replace(/^[a-zA-Z]:\/cc\//i, '/Users/shanfu/cc/');
+    norm = norm.replace(/^[a-zA-Z]:\/cc\//i, `${homeDir}/cc/`);
   } else if (norm.startsWith('cc/')) {
-    norm = '/Users/shanfu/cc/' + norm.substring(3);
+    norm = `${homeDir}/cc/` + norm.substring(3);
   }
   return norm;
 };

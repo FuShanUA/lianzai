@@ -6,18 +6,31 @@ import json
 import time
 
 # Ensure API Key is loaded
-# Try reading from /Users/shanfu/cc/.env
 from dotenv import load_dotenv
-load_dotenv("/Users/shanfu/cc/.env")
+
+def find_and_load_dotenv():
+    # 1. Try script directory parent (repo root)
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    repo_root = os.path.abspath(os.path.join(script_dir, "../../../.."))
+    repo_env = os.path.join(repo_root, ".env")
+    if os.path.exists(repo_env):
+        load_dotenv(repo_env)
+        return
+    
+    # 2. Try global ~/.baoyu-skills/.env
+    home_env = os.path.expanduser("~/.baoyu-skills/.env")
+    if os.path.exists(home_env):
+        load_dotenv(home_env)
+        return
+
+    # 3. Fallback to current working directory
+    load_dotenv()
+
+find_and_load_dotenv()
 
 api_key = os.getenv("GEMINI_API_KEY")
 if not api_key:
-    # Try finding it in the React app's .env
-    load_dotenv("/Users/shanfu/cc/Library/Tools/reportserialize/.env")
-    api_key = os.getenv("GEMINI_API_KEY")
-
-if not api_key:
-    print("Error: GEMINI_API_KEY missing! Set it in /Users/shanfu/cc/.env")
+    print("Error: GEMINI_API_KEY missing! Set it in your .env file or home directory (~/.baoyu-skills/.env)")
     exit(1)
 
 genai.configure(api_key=api_key)

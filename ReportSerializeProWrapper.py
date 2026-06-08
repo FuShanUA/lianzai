@@ -45,13 +45,23 @@ def main():
     # Ensure Vite port is clear
     kill_port_owner(3005)
 
+    import platform
+    is_win = platform.system() == 'Windows'
+    creation_flags = subprocess.CREATE_NO_WINDOW if is_win else 0
+
     # Check for node_modules
     node_modules_dir = os.path.join(base_dir, 'node_modules')
     if not os.path.exists(node_modules_dir):
-        subprocess.run(["npm", "install"], shell=True, creationflags=subprocess.CREATE_NO_WINDOW)
+        if is_win:
+            subprocess.run(["npm", "install"], shell=True, creationflags=creation_flags)
+        else:
+            subprocess.run(["npm", "install"], shell=False)
 
     # Start the Vite server
-    vite_proc = subprocess.Popen(["cmd.exe", "/c", "npm run dev"], shell=False, creationflags=subprocess.CREATE_NO_WINDOW)
+    if is_win:
+        vite_proc = subprocess.Popen(["cmd.exe", "/c", "npm run dev"], shell=False, creationflags=creation_flags)
+    else:
+        vite_proc = subprocess.Popen(["npm", "run", "dev"], shell=False)
 
     # Wait until Vite says it's ready
     is_up = False

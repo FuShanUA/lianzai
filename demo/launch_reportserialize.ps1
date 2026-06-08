@@ -1,5 +1,8 @@
 $ErrorActionPreference = "Continue"
-$WorkingDir = "/Users/shanfu/cc/Library/Tools/reportserialize-pro/demo"
+$WorkingDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+if ([string]::IsNullOrEmpty($WorkingDir)) {
+    $WorkingDir = Get-Location
+}
 Set-Location $WorkingDir
 
 # Ensure node_modules exists

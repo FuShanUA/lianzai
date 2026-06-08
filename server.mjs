@@ -253,7 +253,7 @@ const loadAllApiKeys = () => {
 
   // 2. Try global/home .env or legacy path
   const homeEnvPath = path.join(os.homedir(), '.baoyu-skills', '.env');
-  const legacyEnvPath = process.platform === 'win32' ? 'D:\\cc\\.baoyu-skills\\.env' : '/Users/shanfu/cc/.baoyu-skills/.env';
+  const legacyEnvPath = process.platform === 'win32' ? 'D:\\cc\\.baoyu-skills\\.env' : path.join(os.homedir(), 'cc', '.baoyu-skills', '.env');
   const globalEnvPath = fs.existsSync(homeEnvPath) ? homeEnvPath : legacyEnvPath;
   
   if (fs.existsSync(globalEnvPath)) {
@@ -531,6 +531,14 @@ app.use('/project-assets', (req, res, next) => {
 
 app.get('/api/list-llm-models', (req, res) => res.json(LLM_MODELS));
 
+app.get('/api/system-info', (req, res) => {
+  res.json({
+    homedir: os.homedir(),
+    platform: process.platform,
+    username: os.userInfo().username
+  });
+});
+
 app.post('/api/generate-content', async (req, res) => {
   try {
     const { model, prompt, llmApiKey, provider, vertexProjectId, vertexLocation } = req.body;
@@ -644,15 +652,15 @@ app.post('/api/build-full-zip', async (req, res) => {
 
 app.get('/api/get-styles', (req, res) => {
   const localHumanizerPath = path.join(__dirname, 'Library', 'Tools', 'humanizer-zh', 'SKILL.md');
-  const legacyHumanizerPath = fs.existsSync('/Users/shanfu/cc/Library/Agents/Humanizer/SKILL.md') 
-    ? '/Users/shanfu/cc/Library/Agents/Humanizer/SKILL.md'
-    : 'D:\\cc\\Library\\Agents\\Humanizer\\SKILL.md';
+  const legacyHumanizerPath = process.platform === 'win32'
+    ? 'D:\\cc\\Library\\Agents\\Humanizer\\SKILL.md'
+    : path.join(os.homedir(), 'cc/Library/Agents/Humanizer/SKILL.md');
   const humanizerPath = fs.existsSync(localHumanizerPath) ? localHumanizerPath : legacyHumanizerPath;
 
   const localWritingStylePath = path.join(__dirname, 'Library', 'Tools', 'WritingStyle', 'SKILL.md');
-  const legacyWritingStylePath = fs.existsSync('/Users/shanfu/cc/Library/Tools/WritingStyle/SKILL.md')
-    ? '/Users/shanfu/cc/Library/Tools/WritingStyle/SKILL.md'
-    : 'D:\\cc\\Library\\Tools\\WritingStyle\\SKILL.md';
+  const legacyWritingStylePath = process.platform === 'win32'
+    ? 'D:\\cc\\Library\\Tools\\WritingStyle\\SKILL.md'
+    : path.join(os.homedir(), 'cc/Library/Tools/WritingStyle/SKILL.md');
   const writingStylePath = fs.existsSync(localWritingStylePath) ? localWritingStylePath : legacyWritingStylePath;
   
   const humanizer = fs.existsSync(humanizerPath) ? fs.readFileSync(humanizerPath, 'utf8') : '';
@@ -700,14 +708,15 @@ app.post('/api/unzip-project', async (req, res) => {
     const normalizePath = (p) => {
       if (!p) return '';
       let norm = p.replace(/\\/g, '/');
+      const homeDir = os.homedir();
       if (norm.includes('/cc/')) {
         const idx = norm.indexOf('/cc/');
-        return '/Users/shanfu' + norm.substring(idx);
+        return homeDir + norm.substring(idx);
       }
       if (/^[a-zA-Z]:\/cc\//i.test(norm)) {
-        norm = norm.replace(/^[a-zA-Z]:\/cc\//i, '/Users/shanfu/cc/');
+        norm = norm.replace(/^[a-zA-Z]:\/cc\//i, path.join(homeDir, 'cc/').replace(/\\/g, '/'));
       } else if (norm.startsWith('cc/')) {
-        norm = '/Users/shanfu/cc/' + norm.substring(3);
+        norm = path.join(homeDir, 'cc/', norm.substring(3)).replace(/\\/g, '/');
       }
       return norm;
     };
@@ -1216,7 +1225,7 @@ app.get('/api/wechat-accounts', (req, res) => {
   try {
     const possiblePaths = [
       path.join(os.homedir(), '.baoyu-skills', 'baoyu-post-to-wechat', 'EXTEND.md'),
-      '/Users/shanfu/cc/.baoyu-skills/baoyu-post-to-wechat/EXTEND.md',
+      path.join(os.homedir(), 'cc/.baoyu-skills/baoyu-post-to-wechat/EXTEND.md'),
       'D:\\cc\\.baoyu-skills\\baoyu-post-to-wechat\\EXTEND.md'
     ];
     

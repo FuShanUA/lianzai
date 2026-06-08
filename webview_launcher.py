@@ -52,10 +52,16 @@ class AppDelegate(objc.lookUpClass("NSObject")):
         
         # Load app icon in dock
         try:
-            icon_path = "/Users/shanfu/Desktop/文章连载 Pro.app/Contents/Resources/AppIcon.icns"
-            image = NSImage.alloc().initWithContentsOfFile_(icon_path)
-            if image:
-                NSApp.setApplicationIconImage_(image)
+            import os
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            icon_path = os.path.abspath(os.path.join(script_dir, "../Resources/AppIcon.icns"))
+            if not os.path.exists(icon_path):
+                icon_path = "/Users/shanfu/Desktop/文章连载 Pro.app/Contents/Resources/AppIcon.icns"
+            
+            if os.path.exists(icon_path):
+                image = NSImage.alloc().initWithContentsOfFile_(icon_path)
+                if image:
+                    NSApp.setApplicationIconImage_(image)
         except Exception as e:
             print(f"Failed to set dock icon: {e}")
 

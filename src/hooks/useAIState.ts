@@ -10,7 +10,10 @@ export const useAIState = () => {
   const [imageApiKey, setImageApiKey] = useState('');
   const [vertexProjectId, setVertexProjectId] = useState('gen-lang-client-0991632900');
   const [vertexLocation, setVertexLocation] = useState('global');
-  const [vertexSaKeyPath, setVertexSaKeyPath] = useState('/Users/shanfu/.config/gcloud/application_default_credentials.json');
+  const [vertexSaKeyPath, setVertexSaKeyPath] = useState(() => {
+    const home = (window as any).__HOME_DIR__ || '/Users/shanfu';
+    return `${home}/.config/gcloud/application_default_credentials.json`;
+  });
 
   const imageVendors = {
     google: { name: 'Google AI Studio', models: ['gemini-3-pro-image-preview', 'gemini-3.1-flash-image-preview'] },
