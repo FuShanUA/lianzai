@@ -2,6 +2,6 @@
   "selectedLlmVendor": "vertex",
   "selectedLlmModel": "gemini-3-flash-preview",
   "selectedImageModel": "gemini-3-pro-image-preview",
-  "llmApiKey": "REDACTED_API_KEY",
-  "imageApiKey": "REDACTED_API_KEY"
+  "llmApiKey": "",
+  "imageApiKey": ""
 }
