@@ -531,7 +531,36 @@ app.use('/project-assets', (req, res, next) => {
   res.status(404).send('Asset not found');
 });
 
-app.get('/api/list-llm-models', (req, res) => res.json(LLM_MODELS));
+app.get('/api/list-llm-models', async (req, res) => {
+  const result = JSON.parse(JSON.stringify(LLM_MODELS));
+  const keys = loadAllApiKeys();
+  
+  await Promise.all(Object.entries(result).map(async ([providerKey, config]) => {
+    if (providerKey === 'gemini' || providerKey === 'vertex' || !config.baseUrl) return;
+    const apiKey = keys[config.envKey];
+    if (!apiKey) return;
+    try {
+      const response = await fetch(`${config.baseUrl}/models`, {
+        headers: { 'Authorization': `Bearer ${apiKey}` },
+        signal: AbortSignal.timeout(3000)
+      });
+      if (response.ok) {
+        const data = await response.json();
+        if (data && Array.isArray(data.data)) {
+          const fetchedModels = data.data.map(m => m.id).filter(Boolean);
+          if (fetchedModels.length > 0) {
+            fetchedModels.sort();
+            config.models = fetchedModels;
+          }
+        }
+      }
+    } catch (e) {
+      console.error(`Failed to dynamically fetch models for ${providerKey}:`, e.message);
+    }
+  }));
+  
+  res.json(result);
+});
 
 app.get('/api/system-info', (req, res) => {
   res.json({
