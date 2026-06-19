@@ -227,11 +227,13 @@ const LLM_MODELS = {
     envKey: 'VERTEX_SA_KEY_PATH', 
     baseUrl: '' 
   },
+  openai: { name: 'OpenAI', models: ['gpt-4o', 'gpt-4o-mini', 'o3-mini', 'o1', 'o1-mini', 'gpt-4-turbo', 'gpt-3.5-turbo'], envKey: 'OPENAI_API_KEY', baseUrl: 'https://api.openai.com/v1' },
   moonshot: { name: 'Moonshot (Kimi)', models: ['moonshot-v1-8k', 'moonshot-v1-32k', 'moonshot-v1-128k'], envKey: 'MOONSHOT_API_KEY', baseUrl: 'https://api.moonshot.cn/v1' },
-  dashscope: { name: 'Alibaba (Qwen)', models: ['qwen-max', 'qwen-plus', 'qwen-turbo', 'qwen2.5-72b-instruct'], envKey: 'DASHSCOPE_API_KEY', baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1' },
+  dashscope: { name: 'Alibaba Bailian (Qwen)', models: ['qwen-max', 'qwen-plus', 'qwen-turbo', 'qwen2.5-72b-instruct'], envKey: 'DASHSCOPE_API_KEY', baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1' },
   zhipu: { name: 'Zhipu (GLM)', models: ['glm-4.5', 'glm-4-plus', 'glm-4-flash', 'glm-4-air'], envKey: 'ZHIPUAI_API_KEY', baseUrl: 'https://open.bigmodel.cn/api/paas/v4' },
   deepseek: { name: 'DeepSeek', models: ['deepseek-chat', 'deepseek-reasoner'], envKey: 'DEEPSEEK_API_KEY', baseUrl: 'https://api.deepseek.com' },
-  siliconflow: { name: 'SiliconFlow', models: ['deepseek-ai/DeepSeek-V3', 'deepseek-ai/DeepSeek-R1', 'Qwen/Qwen2.5-72B-Instruct', 'Qwen/Qwen2.5-14B-Instruct', 'Qwen/Qwen2.5-7B-Instruct', 'meta-llama/Meta-Llama-3.1-400B-Instruct'], envKey: 'SILICONFLOW_API_KEY', baseUrl: 'https://api.siliconflow.cn/v1' }
+  siliconflow: { name: 'SiliconFlow', models: ['deepseek-ai/DeepSeek-V3', 'deepseek-ai/DeepSeek-R1', 'Qwen/Qwen2.5-72B-Instruct', 'Qwen/Qwen2.5-14B-Instruct', 'Qwen/Qwen2.5-7B-Instruct', 'meta-llama/Meta-Llama-3.1-400B-Instruct'], envKey: 'SILICONFLOW_API_KEY', baseUrl: 'https://api.siliconflow.cn/v1' },
+  minimax: { name: 'MiniMax', models: ['minimax-m3', 'abab7-chat', 'abab6.5g-chat'], envKey: 'MINIMAX_API_KEY', baseUrl: 'https://api.minimaxi.com/v1' }
 };
 
 const loadAllApiKeys = () => {

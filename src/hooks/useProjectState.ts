@@ -38,6 +38,8 @@ const normalizeVendor = (v: string) => {
   if (val.includes('zhipu') || val.includes('glm')) return 'zhipu';
   if (val.includes('deepseek')) return 'deepseek';
   if (val.includes('siliconflow')) return 'siliconflow';
+  if (val.includes('minimax')) return 'minimax';
+  if (val.includes('openai') || val.includes('gpt')) return 'openai';
   return v;
 };
 
