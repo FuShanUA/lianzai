@@ -128,11 +128,18 @@ export const SystemModal = ({ isOpen, onClose, aiState, onSave }: any) => {
            <div className="grid grid-cols-2 gap-4">
              <div className="space-y-1">
                <label className="text-[9px] font-bold text-[#141414]/40">配图 AI 供应商</label>
-               <select value={aiState.selectedImageVendor} onChange={(e) => aiState.setSelectedImageVendor(e.target.value)} className="w-full h-10 px-3 bg-[#F5F5F0]/50 border border-[#141414]/10 rounded-xl text-xs">
-                 <option value="google">Google Image</option>
-                 <option value="replicate">Replicate (Flux/Hunyuan)</option>
-                 <option value="vertex">Google Vertex Image</option>
-               </select>
+                <select value={aiState.selectedImageVendor} onChange={(e) => {
+                  const vendor = e.target.value;
+                  aiState.setSelectedImageVendor(vendor);
+                  const models = aiState.imageVendors[vendor]?.models || [];
+                  if (models.length > 0 && !models.includes(aiState.selectedImageModel)) {
+                    aiState.setSelectedImageModel(models[0]);
+                  }
+                }} className="w-full h-10 px-3 bg-[#F5F5F0]/50 border border-[#141414]/10 rounded-xl text-xs">
+                  {Object.entries(aiState.imageVendors).map(([key, config]: any) => (
+                    <option key={key} value={key}>{config.name}</option>
+                  ))}
+                </select>
              </div>
              <div className="space-y-1">
                <label className="text-[9px] font-bold text-[#141414]/40">配图生成模型</label>

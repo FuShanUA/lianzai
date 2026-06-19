@@ -229,7 +229,7 @@ const LLM_MODELS = {
   },
   openai: { name: 'OpenAI', models: ['gpt-4o', 'gpt-4o-mini', 'o3-mini', 'o1', 'o1-mini', 'gpt-4-turbo', 'gpt-3.5-turbo'], envKey: 'OPENAI_API_KEY', baseUrl: 'https://api.openai.com/v1' },
   moonshot: { name: 'Moonshot (Kimi)', models: ['moonshot-v1-8k', 'moonshot-v1-32k', 'moonshot-v1-128k'], envKey: 'MOONSHOT_API_KEY', baseUrl: 'https://api.moonshot.cn/v1' },
-  dashscope: { name: 'Alibaba Bailian (Qwen)', models: ['qwen-max', 'qwen-plus', 'qwen-turbo', 'qwen2.5-72b-instruct'], envKey: 'DASHSCOPE_API_KEY', baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1' },
+  dashscope: { name: 'Alibaba Bailian (Qwen)', models: ['qwen-max', 'qwen-max-2025-01-25', 'qwen-plus', 'qwen-plus-2025-01-25', 'qwen-turbo', 'qwen-turbo-2025-01-25', 'qwen2.5-72b-instruct', 'qwen2.5-32b-instruct', 'qwen2.5-14b-instruct', 'qwen2.5-7b-instruct', 'qwen2.5-coder-32b-instruct', 'qwen2.5-coder-7b-instruct', 'deepseek-r1', 'deepseek-v3'], envKey: 'DASHSCOPE_API_KEY', baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1' },
   zhipu: { name: 'Zhipu (GLM)', models: ['glm-4.5', 'glm-4-plus', 'glm-4-flash', 'glm-4-air'], envKey: 'ZHIPUAI_API_KEY', baseUrl: 'https://open.bigmodel.cn/api/paas/v4' },
   deepseek: { name: 'DeepSeek', models: ['deepseek-chat', 'deepseek-reasoner'], envKey: 'DEEPSEEK_API_KEY', baseUrl: 'https://api.deepseek.com' },
   siliconflow: { name: 'SiliconFlow', models: ['deepseek-ai/DeepSeek-V3', 'deepseek-ai/DeepSeek-R1', 'Qwen/Qwen2.5-72B-Instruct', 'Qwen/Qwen2.5-14B-Instruct', 'Qwen/Qwen2.5-7B-Instruct', 'meta-llama/Meta-Llama-3.1-400B-Instruct'], envKey: 'SILICONFLOW_API_KEY', baseUrl: 'https://api.siliconflow.cn/v1' },
@@ -895,12 +895,12 @@ app.post('/api/extract-visual-points', async (req, res) => {
 app.post('/api/generate-asset', async (req, res) => {
   const timestamp = Date.now();
   try {
-    const { description, type, chapterId, labels, styleDNA, imageModel, imageKey, vertexProjectId, vertexLocation, anchorText, infographicIndex } = req.body;
+    const { description, type, chapterId, labels, styleDNA, imageModel, imageVendor, imageKey, vertexProjectId, vertexLocation, anchorText, infographicIndex } = req.body;
     const slug = getAnchorSlug(anchorText, infographicIndex, type);
     const activeFilename = `${type || 'asset'}-${timestamp}.png`;
     const keys = loadAllApiKeys();
     
-    let imgProvider = "google";
+    let imgProvider = imageVendor || "google";
     let model = "gemini-3-pro-image-preview";
     if (imageModel && imageModel.includes(':')) {
       const parts = imageModel.split(':');
@@ -949,9 +949,14 @@ app.post('/api/generate-asset', async (req, res) => {
     const env = { 
       ...process.env, 
       ...keys,
-      GOOGLE_API_KEY: keys.GEMINI_API_KEY || keys.GOOGLE_API_KEY,
-      REPLICATE_API_TOKEN: (imgProvider === 'replicate' ? imageKey : '') || keys.REPLICATE_API_TOKEN,
+      GOOGLE_API_KEY: (imgProvider === 'google' ? imageKey : '') || keys.GEMINI_API_KEY || keys.GOOGLE_API_KEY,
+      REPLICATE_API_TOKEN: (imgProvider === 'replicate' ? imageKey : '') || keys.REPLICATE_API_TOKEN || keys.REPLICATE_API_KEY,
       ARK_API_KEY: (imgProvider === 'seedream' ? imageKey : '') || keys.ARK_API_KEY,
+      OPENAI_API_KEY: (imgProvider === 'openai' ? imageKey : '') || keys.OPENAI_API_KEY,
+      AZURE_OPENAI_API_KEY: (imgProvider === 'azure' ? imageKey : '') || keys.AZURE_OPENAI_API_KEY,
+      OPENROUTER_API_KEY: (imgProvider === 'openrouter' ? imageKey : '') || keys.OPENROUTER_API_KEY,
+      DASHSCOPE_API_KEY: (imgProvider === 'dashscope' ? imageKey : '') || keys.DASHSCOPE_API_KEY,
+      MINIMAX_API_KEY: (imgProvider === 'minimax' ? imageKey : '') || keys.MINIMAX_API_KEY,
       VERTEX_ACCESS_TOKEN: (imgProvider === 'vertex' ? imageKey : '') || keys.VERTEX_ACCESS_TOKEN,
       VERTEX_PROJECT_ID: keys.VERTEX_PROJECT_ID || keys.GOOGLE_CLOUD_PROJECT,
       VERTEX_LOCATION: keys.VERTEX_LOCATION || keys.GOOGLE_CLOUD_LOCATION || 'global'

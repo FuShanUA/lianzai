@@ -125,7 +125,7 @@ export default function App() {
   const { 
     llmVendors, selectedLlmVendor, setSelectedLlmVendor, 
     selectedLlmModel, setSelectedLlmModel, llmApiKey, setLlmApiKey,
-    selectedImageModel, imageApiKey
+    selectedImageModel, selectedImageVendor, imageApiKey
   } = aiState;
 
 
@@ -243,6 +243,7 @@ export default function App() {
     selectedLlmModel,
     llmApiKey,
     selectedImageModel,
+    selectedImageVendor,
     imageApiKey,
     projectPath: projectState.projectPath,
     issues,

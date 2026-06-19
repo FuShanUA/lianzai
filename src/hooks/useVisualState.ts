@@ -9,6 +9,7 @@ interface UseVisualStateProps {
   selectedLlmModel: string;
   llmApiKey: string;
   selectedImageModel: string;
+  selectedImageVendor?: string;
   imageApiKey: string;
   projectPath: string;
   issues: Chapter[];
@@ -67,7 +68,7 @@ const DEFAULT_STYLE_PRESETS = [
 export const useVisualState = (props: UseVisualStateProps) => {
   const {
     activeIssue, activeId, selectedLlmModel, llmApiKey,
-    selectedImageModel, imageApiKey, projectPath,
+    selectedImageModel, selectedImageVendor, imageApiKey, projectPath,
     issues, setIssues, editor, showToast
   } = props;
 
@@ -519,6 +520,7 @@ export const useVisualState = (props: UseVisualStateProps) => {
           labels: visual.labels,
           styleDNA: finalDNA,
           imageModel: selectedImageModel,
+          imageVendor: selectedImageVendor,
           imageKey: imageApiKey
         })
       });
